@@ -42,7 +42,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          miniconda-version: "latest"
+          channels: pyviz/channel/dev,bokeh,conda-forge
+          # conda-version: "latest"
+          use-only-tar-bz2: true
       - name: Fetch unshallow
         run: git fetch --prune --tags --unshallow
       - name: conda setup
