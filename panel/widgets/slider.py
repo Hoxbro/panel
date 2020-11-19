@@ -47,6 +47,8 @@ class _SliderBase(Widget):
     tooltips = param.Boolean(default=True, doc="""
         Whether the slider handle should display tooltips.""")
 
+    continuous_update = param.Boolean(default=True)
+
     _widget_type = _BkSlider
 
     __abstract = True
@@ -55,6 +57,21 @@ class _SliderBase(Widget):
         if 'value' in params and 'value_throttled' in self.param:
             params['value_throttled'] = params['value']
         super(_SliderBase, self).__init__(**params)
+
+    def _process_param_change(self, msg):
+        properties = super(_SliderBase, self)._process_param_change(msg)
+        properties.pop('continuous_update', None)
+        return properties
+
+    def _process_events(self, events):
+        if self.continuous_update:
+            pass
+        elif 'value_throttled' not in events:
+            events.pop('value', None)
+        elif 'value_throttled' in events:
+            events['value'] = events['value_throttled']
+
+        super(_SliderBase, self)._process_events(events)
 
 
 class ContinuousSlider(_SliderBase):
